@@ -246,6 +246,36 @@ namespace pcpp
 	 * IPSec protocol (aggregation bitmask of AH and ESP protocols)
 	 */
 	const ProtocolType IPSec = 0x1800000000;
+	
+    /**
+     * NetFlow protocol(NetFlow v1/v5/v7/v9/IPFIX mask)
+     */
+    const ProtocolType NetFlow = 0x7C000000000;
+
+    /**
+     * NetFlow version 1 protocol
+     */
+    const ProtocolType NetFlow_v1 = 0x4000000000;
+
+    /**
+     * NetFlow version 5 protocol
+     */
+    const ProtocolType NetFlow_v5 = 0x8000000000;
+
+    /**
+     * NetFlow version 7 protocol
+     */
+    const ProtocolType NetFlow_v7 = 0x10000000000;
+
+    /**
+     * NetFlow version 9 protocol
+     */
+    const ProtocolType NetFlow_v9 = 0x20000000000;
+
+    /**
+     * NetFlow version IPFIX protocol
+     */
+    const ProtocolType NetFlow_IPFIX = 0x40000000000;
 
 	/**
 	 * An enum representing OSI model layers

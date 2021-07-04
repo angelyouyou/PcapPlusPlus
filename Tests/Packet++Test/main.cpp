@@ -1,4 +1,4 @@
-#include <stdio.h> 
+#include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
 #include "PcapPlusPlusVersion.h"
@@ -33,7 +33,6 @@ void printUsage()
 
 int main(int argc, char* argv[]) 
 {
-
 	int optionIndex = 0;
 	char opt = 0;
 	std::string userTags = "", configTags = "";
@@ -99,135 +98,138 @@ int main(int argc, char* argv[])
 	}
 
 	PTF_START_RUNNING_TESTS(userTags, configTags);
-
-	PTF_RUN_TEST(EthPacketCreation, "eth2;eth");
-	PTF_RUN_TEST(EthPacketPointerCreation, "eth2;eth");
-	PTF_RUN_TEST(EthAndArpPacketParsing, "eth2;eth;arp");
-	PTF_RUN_TEST(ArpPacketCreation, "arp");
-	PTF_RUN_TEST(EthDot3LayerParsingTest, "eth_dot3;eth");
-	PTF_RUN_TEST(EthDot3LayerCreateEditTest, "eth_dot3;eth");
-
-	PTF_RUN_TEST(VlanParseAndCreation, "vlan");
-	PTF_RUN_TEST(QinQ802_1adParse, "vlan");
-	PTF_RUN_TEST(MplsLayerTest, "mpls");
-	PTF_RUN_TEST(VxlanParsingAndCreationTest, "vxlan");
-
-	PTF_RUN_TEST(IPv4PacketCreation, "ipv4");
-	PTF_RUN_TEST(IPv4PacketParsing, "ipv4");
-	PTF_RUN_TEST(IPv4FragmentationTest, "ipv4");
-	PTF_RUN_TEST(IPv4OptionsParsingTest, "ipv4");
-	PTF_RUN_TEST(IPv4OptionsEditTest, "ipv4");
-	PTF_RUN_TEST(IPv4UdpChecksum, "ipv4");
-
-	PTF_RUN_TEST(IPv6UdpPacketParseAndCreate, "ipv6");
-	PTF_RUN_TEST(IPv6FragmentationTest, "ipv6");
-	PTF_RUN_TEST(IPv6ExtensionsTest, "ipv6");
-
-	PTF_RUN_TEST(TcpPacketNoOptionsParsing, "tcp");
-	PTF_RUN_TEST(TcpPacketWithOptionsParsing, "tcp");
-	PTF_RUN_TEST(TcpPacketWithOptionsParsing2, "tcp");
-	PTF_RUN_TEST(TcpPacketCreation, "tcp");
-	PTF_RUN_TEST(TcpPacketCreation2, "tcp");
-	PTF_RUN_TEST(TcpMalformedPacketParsing, "tcp");
-
-	PTF_RUN_TEST(PacketUtilsHash5TupleUdp, "udp");
-	PTF_RUN_TEST(PacketUtilsHash5TupleTcp, "tcp");
-	PTF_RUN_TEST(PacketUtilsHash5TupleIPv6, "ipv6");
-
-	PTF_RUN_TEST(InsertDataToPacket, "packet;insert");
-	PTF_RUN_TEST(InsertVlanToPacket, "packet;vlan;insert");
-	PTF_RUN_TEST(RemoveLayerTest, "packet;remove_layer");
-	PTF_RUN_TEST(CopyLayerAndPacketTest, "packet;copy_layer");
-	PTF_RUN_TEST(PacketLayerLookupTest, "packet");
-	PTF_RUN_TEST(RawPacketTimeStampSetterTest, "packet");
-	PTF_RUN_TEST(ParsePartialPacketTest, "packet;partial_packet");
-	PTF_RUN_TEST(PacketTrailerTest, "packet;packet_trailer");
-	PTF_RUN_TEST(ResizeLayerTest, "packet;resize");
-
-	PTF_RUN_TEST(HttpRequestLayerParsingTest, "http");
-	PTF_RUN_TEST(HttpRequestLayerCreationTest, "http");
-	PTF_RUN_TEST(HttpRequestLayerEditTest, "http");
-	PTF_RUN_TEST(HttpResponseLayerParsingTest, "http");
-	PTF_RUN_TEST(HttpResponseLayerCreationTest, "http");
-	PTF_RUN_TEST(HttpResponseLayerEditTest, "http");
-	PTF_RUN_TEST(HttpMalformedResponseTest, "http");
-
-	PTF_RUN_TEST(PPPoESessionLayerParsingTest, "pppoe");
-	PTF_RUN_TEST(PPPoESessionLayerCreationTest, "pppoe");
-	PTF_RUN_TEST(PPPoEDiscoveryLayerParsingTest, "pppoe");
-	PTF_RUN_TEST(PPPoEDiscoveryLayerCreateTest, "pppoe");
-
-	PTF_RUN_TEST(DnsLayerParsingTest, "dns");
-	PTF_RUN_TEST(DnsLayerQueryCreationTest, "dns");
-	PTF_RUN_TEST(DnsLayerResourceCreationTest, "dns");
-	PTF_RUN_TEST(DnsLayerEditTest, "dns");
-	PTF_RUN_TEST(DnsLayerRemoveResourceTest, "dns");
-	PTF_RUN_TEST(DnsOverTcpParsingTest, "dns");
-	PTF_RUN_TEST(DnsOverTcpCreationTest, "dns");
-
-	PTF_RUN_TEST(IcmpParsingTest, "icmp");
-	PTF_RUN_TEST(IcmpCreationTest, "icmp");
-	PTF_RUN_TEST(IcmpEditTest, "icmp");
+//
+//	PTF_RUN_TEST(EthPacketCreation, "eth2;eth");
+//	PTF_RUN_TEST(EthPacketPointerCreation, "eth2;eth");
+//	PTF_RUN_TEST(EthAndArpPacketParsing, "eth2;eth;arp");
+//	PTF_RUN_TEST(ArpPacketCreation, "arp");
+//	PTF_RUN_TEST(EthDot3LayerParsingTest, "eth_dot3;eth");
+//	PTF_RUN_TEST(EthDot3LayerCreateEditTest, "eth_dot3;eth");
+//
+//	PTF_RUN_TEST(VlanParseAndCreation, "vlan");
+//	PTF_RUN_TEST(QinQ802_1adParse, "vlan");
+//	PTF_RUN_TEST(MplsLayerTest, "mpls");
+//	PTF_RUN_TEST(VxlanParsingAndCreationTest, "vxlan");
+//
+//	PTF_RUN_TEST(IPv4PacketCreation, "ipv4");
+//	PTF_RUN_TEST(IPv4PacketParsing, "ipv4");
+//	PTF_RUN_TEST(IPv4FragmentationTest, "ipv4");
+//	PTF_RUN_TEST(IPv4OptionsParsingTest, "ipv4");
+//	PTF_RUN_TEST(IPv4OptionsEditTest, "ipv4");
+//	PTF_RUN_TEST(IPv4UdpChecksum, "ipv4");
+//
+//	PTF_RUN_TEST(IPv6UdpPacketParseAndCreate, "ipv6");
+//	PTF_RUN_TEST(IPv6FragmentationTest, "ipv6");
+//	PTF_RUN_TEST(IPv6ExtensionsTest, "ipv6");
+//
+//	PTF_RUN_TEST(TcpPacketNoOptionsParsing, "tcp");
+//	PTF_RUN_TEST(TcpPacketWithOptionsParsing, "tcp");
+//	PTF_RUN_TEST(TcpPacketWithOptionsParsing2, "tcp");
+//	PTF_RUN_TEST(TcpPacketCreation, "tcp");
+//	PTF_RUN_TEST(TcpPacketCreation2, "tcp");
+//	PTF_RUN_TEST(TcpMalformedPacketParsing, "tcp");
+//
+//	PTF_RUN_TEST(PacketUtilsHash5TupleUdp, "udp");
+//	PTF_RUN_TEST(PacketUtilsHash5TupleTcp, "tcp");
+//	PTF_RUN_TEST(PacketUtilsHash5TupleIPv6, "ipv6");
+//
+//	PTF_RUN_TEST(InsertDataToPacket, "packet;insert");
+//	PTF_RUN_TEST(InsertVlanToPacket, "packet;vlan;insert");
+//	PTF_RUN_TEST(RemoveLayerTest, "packet;remove_layer");
+//	PTF_RUN_TEST(CopyLayerAndPacketTest, "packet;copy_layer");
+//	PTF_RUN_TEST(PacketLayerLookupTest, "packet");
+//	PTF_RUN_TEST(RawPacketTimeStampSetterTest, "packet");
+//	PTF_RUN_TEST(ParsePartialPacketTest, "packet;partial_packet");
+//	PTF_RUN_TEST(PacketTrailerTest, "packet;packet_trailer");
+//	PTF_RUN_TEST(ResizeLayerTest, "packet;resize");
+//
+//	PTF_RUN_TEST(HttpRequestLayerParsingTest, "http");
+//	PTF_RUN_TEST(HttpRequestLayerCreationTest, "http");
+//	PTF_RUN_TEST(HttpRequestLayerEditTest, "http");
+//	PTF_RUN_TEST(HttpResponseLayerParsingTest, "http");
+//	PTF_RUN_TEST(HttpResponseLayerCreationTest, "http");
+//	PTF_RUN_TEST(HttpResponseLayerEditTest, "http");
+//	PTF_RUN_TEST(HttpMalformedResponseTest, "http");
+//
+//	PTF_RUN_TEST(PPPoESessionLayerParsingTest, "pppoe");
+//	PTF_RUN_TEST(PPPoESessionLayerCreationTest, "pppoe");
+//	PTF_RUN_TEST(PPPoEDiscoveryLayerParsingTest, "pppoe");
+//	PTF_RUN_TEST(PPPoEDiscoveryLayerCreateTest, "pppoe");
+//
+//	PTF_RUN_TEST(DnsLayerParsingTest, "dns");
+//	PTF_RUN_TEST(DnsLayerQueryCreationTest, "dns");
+//	PTF_RUN_TEST(DnsLayerResourceCreationTest, "dns");
+//	PTF_RUN_TEST(DnsLayerEditTest, "dns");
+//	PTF_RUN_TEST(DnsLayerRemoveResourceTest, "dns");
+//	PTF_RUN_TEST(DnsOverTcpParsingTest, "dns");
+//	PTF_RUN_TEST(DnsOverTcpCreationTest, "dns");
+//
+//	PTF_RUN_TEST(IcmpParsingTest, "icmp");
+//	PTF_RUN_TEST(IcmpCreationTest, "icmp");
+//	PTF_RUN_TEST(IcmpEditTest, "icmp");
+//
+//	PTF_RUN_TEST(GreParsingTest, "gre");
+//	PTF_RUN_TEST(GreCreationTest, "gre");
+//	PTF_RUN_TEST(GreEditTest, "gre");
+//
+//	PTF_RUN_TEST(SSLClientHelloParsingTest, "ssl");
+//	PTF_RUN_TEST(SSLAppDataParsingTest, "ssl");
+//	PTF_RUN_TEST(SSLAlertParsingTest, "ssl");
+//	PTF_RUN_TEST(SSLMultipleRecordParsingTest, "ssl");
+//	PTF_RUN_TEST(SSLMultipleRecordParsing2Test, "ssl");
+//	PTF_RUN_TEST(SSLMultipleRecordParsing3Test, "ssl");
+//	PTF_RUN_TEST(SSLMultipleRecordParsing4Test, "ssl");
+//	PTF_RUN_TEST(SSLPartialCertificateParseTest, "ssl");
+//	PTF_RUN_TEST(SSLNewSessionTicketParseTest, "ssl");
+//	PTF_RUN_TEST(SSLMalformedPacketParsing, "ssl");
+//	PTF_RUN_TEST(TLS1_3ParsingTest, "ssl");
+//	PTF_RUN_TEST(TLSCipherSuiteTest, "ssl");
+//	PTF_RUN_TEST(ClientHelloTLSFingerprintTest, "ssl");
+//	PTF_RUN_TEST(ServerHelloTLSFingerprintTest, "ssl");
+//
+//	PTF_RUN_TEST(SllPacketParsingTest, "sll");
+//	PTF_RUN_TEST(SllPacketCreationTest, "sll");
+//	PTF_RUN_TEST(NullLoopbackTest, "null_loopback");
+//
+//	PTF_RUN_TEST(DhcpParsingTest, "dhcp");
+//	PTF_RUN_TEST(DhcpCreationTest, "dhcp");
+//	PTF_RUN_TEST(DhcpEditTest, "dhcp");
+//
+//	PTF_RUN_TEST(IgmpParsingTest, "igmp");
+//	PTF_RUN_TEST(IgmpCreateAndEditTest, "igmp");
+//	PTF_RUN_TEST(Igmpv3ParsingTest, "igmp");
+//	PTF_RUN_TEST(Igmpv3QueryCreateAndEditTest, "igmp");
+//	PTF_RUN_TEST(Igmpv3ReportCreateAndEditTest, "igmp");
+//
+//	PTF_RUN_TEST(SipRequestLayerParsingTest, "sip");
+//	PTF_RUN_TEST(SipRequestLayerCreationTest, "sip");
+//	PTF_RUN_TEST(SipRequestLayerEditTest, "sip");
+//	PTF_RUN_TEST(SipResponseLayerParsingTest, "sip");
+//	PTF_RUN_TEST(SipResponseLayerCreationTest, "sip");
+//	PTF_RUN_TEST(SipResponseLayerEditTest, "sip");
+//	PTF_RUN_TEST(SdpLayerParsingTest, "sdp");
+//	PTF_RUN_TEST(SdpLayerCreationTest, "sdp");
+//	PTF_RUN_TEST(SdpLayerEditTest, "sdp");
+//
+//	PTF_RUN_TEST(RadiusLayerParsingTest, "radius");
+//	PTF_RUN_TEST(RadiusLayerCreationTest, "radius");
+//	PTF_RUN_TEST(RadiusLayerEditTest, "radius");
+//
+//	PTF_RUN_TEST(GtpLayerParsingTest, "gtp");
+//	PTF_RUN_TEST(GtpLayerCreationTest, "gtp");
+//	PTF_RUN_TEST(GtpLayerEditTest, "gtp");
+//
+//	PTF_RUN_TEST(BgpLayerParsingTest, "bgp");
+//	PTF_RUN_TEST(BgpLayerCreationTest, "bgp");
+//	PTF_RUN_TEST(BgpLayerEditTest, "bgp");
+//
+//	PTF_RUN_TEST(SSHParsingTest, "ssh");
+//	PTF_RUN_TEST(SSHMalformedParsingTest, "ssh");
+//
+//	PTF_RUN_TEST(IPSecParsingTest, "ipsec");
 	
-	PTF_RUN_TEST(GreParsingTest, "gre");
-	PTF_RUN_TEST(GreCreationTest, "gre");
-	PTF_RUN_TEST(GreEditTest, "gre");
-
-	PTF_RUN_TEST(SSLClientHelloParsingTest, "ssl");
-	PTF_RUN_TEST(SSLAppDataParsingTest, "ssl");
-	PTF_RUN_TEST(SSLAlertParsingTest, "ssl");
-	PTF_RUN_TEST(SSLMultipleRecordParsingTest, "ssl");
-	PTF_RUN_TEST(SSLMultipleRecordParsing2Test, "ssl");
-	PTF_RUN_TEST(SSLMultipleRecordParsing3Test, "ssl");
-	PTF_RUN_TEST(SSLMultipleRecordParsing4Test, "ssl");
-	PTF_RUN_TEST(SSLPartialCertificateParseTest, "ssl");
-	PTF_RUN_TEST(SSLNewSessionTicketParseTest, "ssl");
-	PTF_RUN_TEST(SSLMalformedPacketParsing, "ssl");
-	PTF_RUN_TEST(TLS1_3ParsingTest, "ssl");
-	PTF_RUN_TEST(TLSCipherSuiteTest, "ssl");
-	PTF_RUN_TEST(ClientHelloTLSFingerprintTest, "ssl");
-	PTF_RUN_TEST(ServerHelloTLSFingerprintTest, "ssl");
-
-	PTF_RUN_TEST(SllPacketParsingTest, "sll");
-	PTF_RUN_TEST(SllPacketCreationTest, "sll");
-	PTF_RUN_TEST(NullLoopbackTest, "null_loopback");
-
-	PTF_RUN_TEST(DhcpParsingTest, "dhcp");
-	PTF_RUN_TEST(DhcpCreationTest, "dhcp");
-	PTF_RUN_TEST(DhcpEditTest, "dhcp");
-
-	PTF_RUN_TEST(IgmpParsingTest, "igmp");
-	PTF_RUN_TEST(IgmpCreateAndEditTest, "igmp");
-	PTF_RUN_TEST(Igmpv3ParsingTest, "igmp");
-	PTF_RUN_TEST(Igmpv3QueryCreateAndEditTest, "igmp");
-	PTF_RUN_TEST(Igmpv3ReportCreateAndEditTest, "igmp");
-	
-	PTF_RUN_TEST(SipRequestLayerParsingTest, "sip");
-	PTF_RUN_TEST(SipRequestLayerCreationTest, "sip");
-	PTF_RUN_TEST(SipRequestLayerEditTest, "sip");
-	PTF_RUN_TEST(SipResponseLayerParsingTest, "sip");
-	PTF_RUN_TEST(SipResponseLayerCreationTest, "sip");
-	PTF_RUN_TEST(SipResponseLayerEditTest, "sip");
-	PTF_RUN_TEST(SdpLayerParsingTest, "sdp");
-	PTF_RUN_TEST(SdpLayerCreationTest, "sdp");
-	PTF_RUN_TEST(SdpLayerEditTest, "sdp");
-
-	PTF_RUN_TEST(RadiusLayerParsingTest, "radius");
-	PTF_RUN_TEST(RadiusLayerCreationTest, "radius");
-	PTF_RUN_TEST(RadiusLayerEditTest, "radius");
-
-	PTF_RUN_TEST(GtpLayerParsingTest, "gtp");
-	PTF_RUN_TEST(GtpLayerCreationTest, "gtp");
-	PTF_RUN_TEST(GtpLayerEditTest, "gtp");
-
-	PTF_RUN_TEST(BgpLayerParsingTest, "bgp");
-	PTF_RUN_TEST(BgpLayerCreationTest, "bgp");
-	PTF_RUN_TEST(BgpLayerEditTest, "bgp");
-
-	PTF_RUN_TEST(SSHParsingTest, "ssh");
-	PTF_RUN_TEST(SSHMalformedParsingTest, "ssh");
-
-	PTF_RUN_TEST(IPSecParsingTest, "ipsec");
+    PTF_RUN_TEST(NetFlowRecordParsingTest, "netflow");
+    //PTF_RUN_TEST(NetFlowV1CreateAndEditTest, "netflow");
 
 	PTF_END_RUNNING_TESTS;
 }

@@ -152,3 +152,7 @@ PTF_TEST_CASE(SSHMalformedParsingTest);
 
 // Implemented in IPSec.cpp
 PTF_TEST_CASE(IPSecParsingTest);
+
+// Implemented in NetFlowTests.cpp
+PTF_TEST_CASE(NetFlowRecordParsingTest);
+//PTF_TEST_CASE(NetFlowV1CreateAndEditTest);

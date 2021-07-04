@@ -108,6 +108,9 @@ libs:
 fuzzers: libs
 	@cd $(FUZZERS_HOME)              && $(MAKE)
 
+PacketPPTest:
+	@cd $(PACKETPP_TEST)             && $(MAKE) Packet++Test
+
 # Clean
 clean:
 	@cd $(COMMONPP_HOME)             && $(MAKE) clean
