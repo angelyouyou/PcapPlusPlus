@@ -11,7 +11,7 @@ namespace pcpp
 {
     NetFlowLayer* NetFlowLayer::parseNetFlowLayer(uint8_t* data, size_t dataLen, Layer* prevLayer, Packet* packet)
     {
-        if ((dataLen < 16) || (data == nullptr)) {
+        if (!isNetFlowLayerValid(data, dataLen, packet)) {
             return nullptr;
         }
 
@@ -31,6 +31,31 @@ namespace pcpp
 //                return new NetFlowIPFIXLayer(data, dataLen, prevLayer, packet);
             default:
                 return nullptr;
+        }
+    }
+
+    bool NetFlowLayer::isNetFlowLayerValid(uint8_t* data, size_t dataLen, Packet* packet)
+    {
+        if ((dataLen <= NETFLOW_MIN_HEADER_LEN) || (data == nullptr)) {
+            return false;
+        }
+
+        auto *netflowHeader = (NetFlowHeader*)data;
+        uint16_t version = netToHost16(netflowHeader->version);
+        switch (version)
+        {
+            case NetFlow_Version_1:
+                return (dataLen >= (NETFLOW_V1_HEADER_LEN + NETFLOW_V1_RECORD_LEN));
+            case NetFlow_Version_5:
+                return (dataLen >= (NETFLOW_V5_HEADER_LEN + NETFLOW_V5_RECORD_LEN));
+            case NetFlow_Version_7:
+                return (dataLen >= (NETFLOW_V7_HEADER_LEN + NETFLOW_V7_RECORD_LEN));
+//            case NetFlow_Version_9:
+//                return (dataLen >= (NETFLOW_V7_HEADER_LEN + NETFLOW_V7_RECORD_LEN));
+//            case NetFlow_Version_IPFIX:
+//                return (dataLen >= (NETFLOW_V7_HEADER_LEN + NETFLOW_V7_RECORD_LEN));
+            default:
+                return false;
         }
     }
 

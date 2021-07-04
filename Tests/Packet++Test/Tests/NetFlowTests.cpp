@@ -5,6 +5,7 @@
 #include "Packet.h"
 #include "EthLayer.h"
 #include "IPv4Layer.h"
+#include "UdpLayer.h"
 #include "NetFlowLayer.h"
 
 PTF_TEST_CASE(NetFlowRecordParsingTest)
@@ -35,13 +36,15 @@ PTF_TEST_CASE(NetFlowRecordParsingTest)
 
 PTF_TEST_CASE(NetFlowV1CreateAndEditTest)
 {
-    pcpp::EthLayer ethLayer(pcpp::MacAddress("00:01:01:00:00:02"), pcpp::MacAddress("01:00:5e:00:00:16"));
+    pcpp::EthLayer ethLayer(pcpp::MacAddress("ca:01:33:92:00:08"), pcpp::MacAddress("00:50:79:66:68:00"));
 
-    pcpp::IPv4Address srcIp("1.1.1.1");
-    pcpp::IPv4Address dstIp("1.1.1.2");
+    pcpp::IPv4Address srcIp("192.168.10.100");
+    pcpp::IPv4Address dstIp("192.168.10.254");
     pcpp::IPv4Layer ipLayer(srcIp, dstIp);
 
-    ipLayer.getIPv4Header()->ipId = htobe16(3941);
+    pcpp::UdpLayer udpLayer((uint16_t)61985, (uint16_t)9996);
+
+    ipLayer.getIPv4Header()->ipId = htobe16(3550);
     ipLayer.getIPv4Header()->timeToLive = 255;
 
     pcpp::NetFlowV1Layer netFlowV1Layer;

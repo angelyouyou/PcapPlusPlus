@@ -336,26 +336,16 @@ namespace pcpp
         void *bits_memory;
     } BitmaskSelector;
 
+    #define NETFLOW_MIN_HEADER_LEN sizeof(NetFlowHeader)
+    #define NETFLOW_V1_HEADER_LEN sizeof(NetFlowV1Header)
+    #define NETFLOW_V1_RECORD_LEN sizeof(NetFlowV1Record)
+    #define NETFLOW_V5_HEADER_LEN sizeof(NetFlowV5Header)
+    #define NETFLOW_V5_RECORD_LEN sizeof(NetFlowV5Record)
+    #define NETFLOW_V7_HEADER_LEN sizeof(NetFlowV7Header)
+    #define NETFLOW_V7_RECORD_LEN sizeof(NetFlowV7Record)
+
 /* ******************************************* */
  #pragma pack(pop)
-
-    /**
-     * NetFlow packet types
-     */
-    enum NetFlowPacketType
-    {
-        /** NetFlow record */
-        NetFlowPacketType_V1_V5_V7_Data_Record   = -1,
-
-        /** NetFlow template flowset id */
-        NetFlowPacketType_TemplateFlowSetId  = 0,
-
-        /** NetFlow option flowset id */
-        NetFlowPacketType_OptionFlowSetId    = 1,
-
-        /** NetFlow min record flowset id */
-        NetFlowPacketType_MinRecordFlowSetId = 256,
-    };
 
     /**
      * @class NetFlowLayer
@@ -401,10 +391,19 @@ namespace pcpp
          * A static method that gets raw NetFlow data (byte stream) and returns the NetFlow version of this NetFlow message
          * @param[in] data The NetFlow raw data (byte stream)
          * @param[in] dataLen Raw data length
+         * @param[in] packet A pointer to the Packet instance where layer will be stored in
          * @return One of the values NetFlow v1/v5/v7/v9 according to detected NetFlow version or ::UnknownProtocol if couldn't detect
          * NetFlow version
          */
         static NetFlowLayer* parseNetFlowLayer(uint8_t* data, size_t dataLen, Layer* prevLayer, Packet* packet);
+
+        /**
+         * A static method that checks raw NetFlow data (byte stream) and returns validation of this NetFlow message
+         * @param[in] data The NetFlow raw data (byte stream)
+         * @param[in] dataLen Raw data length
+         * @return True if valid, otherwise false
+         */
+        static bool isNetFlowLayerValid(uint8_t* data, size_t dataLen, Packet* packet);
 
         // implement abstract methods
         /**
