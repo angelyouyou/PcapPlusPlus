@@ -28,6 +28,31 @@ std::string byteArrayToHexString(const uint8_t* byteArr, size_t byteArrSize, int
 	return dataStream.str();
 }
 
+std::string byteArrayToHexDumpString(const uint8_t* byteArr, size_t byteArrSize, int stringSizeLimit)
+{
+    const uint32_t colNumFix = 16;
+    int row, col;
+
+    if (stringSizeLimit <= 0)
+        stringSizeLimit = byteArrSize;
+
+    std::stringstream dataStream;
+    dataStream << std::hex;
+
+    for (row = 0; row < byteArrSize; row += colNumFix)
+    {
+        for (col = 0; col < colNumFix; col++)
+        {
+            if (row + col < byteArrSize) {
+                dataStream << std::setw(2) << std::setfill('0') << (int)byteArr[row + col] << " ";
+            }
+        }
+        dataStream << "\n";
+    }
+
+    return dataStream.str();
+}
+
 static int char2int(char input)
 {
 	if(input >= '0' && input <= '9')

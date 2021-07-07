@@ -90,15 +90,27 @@ namespace pcpp
 		 */
 		ProtocolType getProtocol() const { return m_Protocol; }
 
+        /**
+         */
+        void setProtocol(ProtocolType type) { m_Protocol = type; }
+
 		/**
 		 * @return A pointer to the layer raw data. In most cases it'll be a pointer to the first byte of the header
 		 */
 		uint8_t* getData() const { return m_Data; }
 
+        /**
+         */
+        void setData(uint8_t* data) { m_Data = data; }
+
 		/**
 		 * @return The length in bytes of the data from the first byte of the header until the end of the packet
 		 */
 		size_t getDataLen() const { return m_DataLen; }
+
+        /**
+         */
+        void setDataLen(size_t len) { m_DataLen = len; }
 
 		/**
 		 * @return A pointer for the layer payload, meaning the first byte after the header

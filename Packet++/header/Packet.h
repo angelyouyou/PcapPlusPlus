@@ -301,6 +301,13 @@ namespace pcpp
 		 */
 		void toStringList(std::vector<std::string>& result, bool timeAsLocalTime = true) const;
 
+        /**
+         * Similar to toString(), but instead of part of string it outputs complete packet with hex format.
+         * For example: 00 0e b6 00 00 02 00 0e b6 00 00 01 08 00 45 00
+		 * @return A string containing most relevant data from all layers (looks like the packet description in Wireshark)
+         */
+        std::string getPacketHexString() const;
+
 	private:
 		void copyDataFrom(const Packet& other);
 

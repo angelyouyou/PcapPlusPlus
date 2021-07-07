@@ -25,6 +25,19 @@ namespace pcpp
 	 */
 	std::string byteArrayToHexString(const uint8_t* byteArr, size_t byteArrSize, int stringSizeLimit = -1);
 
+    /**
+     * Convert a byte array into a string of hexdump characters. For example: for the array { 0xaa, 0x2b, 0x10 } the string
+     * "aa2b10" will be returned
+     * @param[in] byteArr A byte array
+     * @param[in] byteArrSize The size of the byte array [in bytes]
+     * @param[in] stringSizeLimit An optional parameter that enables to limit the returned string size. If set to a positive
+     * integer value the returned string size will be equal or less than this value. If the string representation of the
+     * whole array is longer than this size then only part of the array will be read. The default value is -1 which means no
+     * string size limitation
+     * @return A string of hex characters representing the byte array
+     */
+    std::string byteArrayToHexDumpString(const uint8_t* byteArr, size_t byteArrSize, int stringSizeLimit = -1);
+
 	/**
 	 * Convert a string of hex characters into a byte array. For example: for the string "aa2b10" an array of values
 	 * { 0xaa, 0x2b, 0x10 } will be returned

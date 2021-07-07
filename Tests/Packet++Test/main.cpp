@@ -228,8 +228,10 @@ int main(int argc, char* argv[])
 //
 //	PTF_RUN_TEST(IPSecParsingTest, "ipsec");
 	
-    PTF_RUN_TEST(NetFlowRecordParsingTest, "netflow");
-    //PTF_RUN_TEST(NetFlowV1CreateAndEditTest, "netflow");
+    //PTF_RUN_TEST(NetFlowRecordParsingTest, "netflow");
+    PTF_RUN_TEST(NetFlowV1CreateAndEditTest, "netflow");
+    //PTF_RUN_TEST(NetFlowV5CreateAndEditTest, "netflow");
+    //PTF_RUN_TEST(NetFlowV7CreateAndEditTest, "netflow");
 
 	PTF_END_RUNNING_TESTS;
 }

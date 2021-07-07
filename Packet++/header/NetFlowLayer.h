@@ -14,17 +14,17 @@
 namespace pcpp
 {
 #pragma pack(push, 1)
-/* ********* NETFLOW ****************** */
+    /**
+    For more info see:
+        https://www.cisco.com/c/en/us/td/docs/net_mgmt/netflow_collection_engine/5-0-3/user/guide/format.html
+        https://www.cisco.com/en/US/technologies/tk648/tk362/technologies_white_paper09186a00800a3db9.pdf
+        https://datatracker.ietf.org/doc/html/rfc3954
+        https://datatracker.ietf.org/doc/html/rfc7011
+    */
 
-/*
-  For more info see:
-    https://www.cisco.com/c/en/us/td/docs/net_mgmt/netflow_collection_engine/5-0-3/user/guide/format.html
-    https://www.cisco.com/en/US/technologies/tk648/tk362/technologies_white_paper09186a00800a3db9.pdf
-    https://datatracker.ietf.org/doc/html/rfc3954
-    https://datatracker.ietf.org/doc/html/rfc7011
-*/
-
-/* ********************************* */
+    /******************************************** Common define **********************************************/
+    #define MAX_NETFLOW_INVALID_PER_PACKET   0
+    #define MAX_NETFLOW_V1V5_PER_PACKET   30
     #define MAX_NETFLOW_V1_PER_PACKET   30
     #define MAX_NETFLOW_V5_PER_PACKET   30
     #define MAX_NETFLOW_V7_PER_PACKET   28
@@ -43,23 +43,18 @@ namespace pcpp
     #define ONLY_IPV6           3
     #define STANDARD_ENTERPRISE_ID    0
 
-    typedef enum enumNetFlow_Version
-    {
-        /** NetFlow v1 */
-        NetFlow_Version_1   = 1,
-
-        /** NetFlow v5 */
-        NetFlow_Version_5  = 5,
-
-        /** NetFlow v7 */
-        NetFlow_Version_7    = 7,
-
-        /** NetFlow v9 */
-        NetFlow_Version_9 = 9,
-
-        /** NetFlow IPFIX */
-        NetFlow_Version_IPFIX = 10
-    }NetFlowVersion;
+    /** NetFlow Version */
+    #define NetFlow_Version_INVALID  0
+    /** NetFlow v1 */
+    #define NetFlow_Version_1  1
+    /** NetFlow v5 */
+    #define NetFlow_Version_5  5
+    /** NetFlow v7 */
+    #define NetFlow_Version_7    7
+    /** NetFlow v9 */
+    #define NetFlow_Version_9  9
+    /** NetFlow IPFIX */
+    #define NetFlow_Version_IPFIX 10
 
     typedef enum enumElementFormat{
         ascii_format = 0,     /* ASCII format */
@@ -83,6 +78,7 @@ namespace pcpp
         dump_as_ascii
     } ElementDumpFormat;
 
+    /******************************************** NetFlow ***************************************************/
     /**
     * @struct netflow_header
     * NetFlow v1/v5/v7/v9 basic protocol header
@@ -92,6 +88,7 @@ namespace pcpp
         u_int16_t countOrLen;      /* The number of records in PDU, or the length of the IPFIX PDU. */
     }NetFlowHeader;
 
+    /*********************************************** NetFlow v1**********************************************/
     typedef struct netflow_v1_header {
         u_int16_t version;         /* Current version = 1*/
         u_int16_t count;           /* The number of records in PDU. */
@@ -115,7 +112,8 @@ namespace pcpp
         u_int16_t pad;        /* pad to word boundary */
         u_int8_t  proto;      /* IP protocol, e.g., 6=TCP, 17=UDP, etc... */
         u_int8_t  tos;        /* IP Type-of-Service */
-        u_int8_t  pad2[7];    /* pad to word boundary */
+        u_int8_t tcp_flags;   /* Cumulative OR of tcp flags */
+        u_int8_t  pad2[6];    /* pad to word boundary */
     }NetFlowV1Record;
 
     typedef struct single_netflow_v1_rec {
@@ -123,7 +121,7 @@ namespace pcpp
         NetFlowV1Record netflowRecord[MAX_NETFLOW_V1_PER_PACKET + 1 ];/* safe against buffer overflows */
     } NetFlow1Packet;
 
-/* ***************************************** */
+    /*********************************************** NetFlow v5 **********************************************/
     typedef struct netflow_v5_header {
         u_int16_t version;         /* Current version=5*/
         u_int16_t count;           /* The number of records in PDU. */
@@ -166,10 +164,7 @@ namespace pcpp
         NetFlowV5Record netflowRecord[MAX_NETFLOW_V5_PER_PACKET + 1];/* safe against buffer overflows */
     } NetFlow5Packet;
 
-/* ************************************ */
-
-/* ********************************* */
-
+    /*********************************************** NetFlow v7 **********************************************/
     typedef struct netflow_v7_header {
         u_int16_t version;         /* Current version=7*/
         u_int16_t count;           /* The number of records in PDU. */
@@ -209,9 +204,7 @@ namespace pcpp
         NetFlowV7Record netflowRecord[MAX_NETFLOW_V7_PER_PACKET + 1];/* safe against buffer overflows */
     } NetFlow7Packet;
 
-/* ************************************ */
-
-    /* NetFlow v9/IPFIX */
+    /********************************************** NetFlow v9&IPFIX ******************************************/
     typedef struct netflow_v9_header {
         u_int16_t version;         /* Current version=9*/
         u_int16_t count;           /* The number of records in PDU. */
@@ -221,12 +214,12 @@ namespace pcpp
         u_int32_t sourceId;        /* Source id */
     } NetFlowV9Header;
 
-    typedef struct netflow_v9_template_field {
+    typedef struct netflow_v9_ipfix_template_field {
         u_int16_t fieldId;
         u_int16_t fieldLen;
         u_int8_t  isPenField;
         u_int32_t enterpriseId;
-    } NetFlowV9V10TemplateField;
+    } NetFlowV9IPFIXTemplateField;
 
     typedef struct netflow_v9_template_header {
         u_int16_t templateFlowset; /* = 0 */
@@ -274,7 +267,7 @@ namespace pcpp
     typedef struct netflow_v9_ipfix_set {
         NetFlowV9IPFIXSimpleTemplate templateInfo;
         u_int16_t flowLen; /* Real flow length */
-        NetFlowV9V10TemplateField *fields;
+        NetFlowV9IPFIXTemplateField *fields;
         struct netflow_v9_ipfix_set *next;
     } NetFlowV9IPFIXSet;
 
@@ -293,24 +286,22 @@ namespace pcpp
         const char *netflowElementName;
         const char **ipfixElementName;
         const char *templateElementDescr;
-    } NetFlowV9V10TemplateElementId;
+    } NetFlowV9IPFIXTemplateElementId;
 
-/* ******************************************* */
-
-/*
-  0                   1                   2                   3
-  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-  |       Version Number          |            Length             |
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-  |                           Export Time                         |
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-  |                       Sequence Number                         |
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-  |                    Observation Domain ID                      |
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-*/
-
+    /********************************************** NetFlow IPFIX ********************************************/
+    /*
+      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |       Version Number          |            Length             |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                           Export Time                         |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                       Sequence Number                         |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                    Observation Domain ID                      |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    */
     typedef struct netflow_ipfix_header {
         u_int16_t version;             /* Current version = 10 */
         u_int16_t len;                 /* The length of the IPFIX PDU */
@@ -339,12 +330,14 @@ namespace pcpp
     #define NETFLOW_MIN_HEADER_LEN sizeof(NetFlowHeader)
     #define NETFLOW_V1_HEADER_LEN sizeof(NetFlowV1Header)
     #define NETFLOW_V1_RECORD_LEN sizeof(NetFlowV1Record)
+    #define NETFLOW_V1_TOTAL_LEN(countOrLen) (NETFLOW_V1_HEADER_LEN + (NETFLOW_V1_RECORD_LEN * (countOrLen)))
     #define NETFLOW_V5_HEADER_LEN sizeof(NetFlowV5Header)
     #define NETFLOW_V5_RECORD_LEN sizeof(NetFlowV5Record)
+    #define NETFLOW_V5_TOTAL_LEN(countOrLen) (NETFLOW_V5_HEADER_LEN + (NETFLOW_V5_RECORD_LEN * (countOrLen)))
     #define NETFLOW_V7_HEADER_LEN sizeof(NetFlowV7Header)
     #define NETFLOW_V7_RECORD_LEN sizeof(NetFlowV7Record)
 
-/* ******************************************* */
+    /********************************************** NetFlow Layers ********************************************/
  #pragma pack(pop)
 
     /**
@@ -355,38 +348,7 @@ namespace pcpp
      */
     class NetFlowLayer : public Layer
     {
-    private:
-        uint8_t* addRecordAt(int offset);
-    protected:
-        NetFlowLayer(uint8_t* data, size_t dataLen, Layer* prevLayer, Packet* packet, ProtocolType NetFlowVer)
-        : Layer(data, dataLen, prevLayer, packet) { m_Protocol = NetFlowVer; }
-
-        NetFlowLayer(ProtocolType NetFlowVer);
-
-        static size_t getHeaderSizeByVersion(ProtocolType NetFlowVer);
-        static size_t getRecordSizeByVersion(ProtocolType NetFlowVer);
     public:
-
-        virtual ~NetFlowLayer() {};
-
-        /**
-         * Get a pointer to the raw NetFlow v1/v5/v7/v9/IPFIX header. Notice this points directly to the data, so every change will change the actual packet data
-         * @return A pointer to the @ref NetFlowHeader
-         */
-        NetFlowHeader* getNetFlowHeader() const { return (NetFlowHeader*)m_Data; }
-
-        /**
-         * Set a pointer to the raw NetFlow v1/v5/v7/v9 header. Notice this points directly to the data, so every change will change the actual packet data
-         * @return A pointer to the @ref netflow_header
-         */
-        NetFlowHeader* setNetFlowHeader(NetFlowHeader* header);
-
-        /**
-		 * A static method that checks whether the port is considered as NetFlow(default)
-		 * @param[in] port The port number to be checked
-		 */
-        static bool isDefaultNetFlowPort(uint16_t port) { return (port == 9996); }
-
         /**
          * A static method that gets raw NetFlow data (byte stream) and returns the NetFlow version of this NetFlow message
          * @param[in] data The NetFlow raw data (byte stream)
@@ -403,9 +365,139 @@ namespace pcpp
          * @param[in] dataLen Raw data length
          * @return True if valid, otherwise false
          */
-        static bool isNetFlowLayerValid(uint8_t* data, size_t dataLen, Packet* packet);
+        static bool isNetFlowLayerValid(uint8_t* data, size_t dataLen);
 
-        // implement abstract methods
+        /**
+		 * A static method that checks whether the port is considered as NetFlow(default)
+		 * @param[in] port The port number to be checked
+		 */
+        static bool isValidNetFlowVersion(uint16_t version);
+
+        /**
+		 * A static method that checks whether the port is considered as NetFlow(default)
+		 * @param[in] port The port number to be checked
+		 */
+        static bool isDefaultNetFlowPort(uint16_t port) { return (port == 9996); }
+
+        /**
+         * Get ProtocolType by version
+         * @param[in] NetFlow version
+         * @return Protocol type
+         */
+        static ProtocolType getProtocolTypeByVersion(u_int16_t version);
+
+        /**
+         * Get size of NetFlow header.
+         * @param[in] version
+         * @return Size of NetFlow header
+         */
+        static size_t getHeaderSizeByVersion(uint16_t version);
+
+        /**
+         * Get size of NetFlow header.
+         * @param[in] protocolType
+         * @return Size of NetFlow header
+         */
+        static size_t getHeaderSizeByProtocol(ProtocolType protocolType);
+
+        static uint16_t getVersionByProtocol(ProtocolType protocolType);
+
+        /**
+        * A static method that append string for title
+        * @param[in] result
+        * @param[in] title
+        * @return std::string
+        */
+        static std::string& appendNetHeaderTitle(std::string &result, const std::string& title);
+
+        /**
+        * A static method that append string for every field
+        * @param[in] result
+        * @param[in] fieldName
+        * @param[in] fieldValue
+        * @return std::string
+        */
+        static std::string& appendNetFlowFieldString(std::string &result, const std::string& fieldName, u_int32_t fieldValue);
+
+        /**
+        * A static method that append string for every field
+        * @param[in] result
+        * @param[in] fieldName
+        * @param[in] fieldValue
+         * @param[in] hexDisplay
+        * @return std::string
+        */
+        static std::string& appendNetFlowFieldString(std::string &result, const std::string& fieldName, u_int32_t fieldValue, bool ipAddress);
+
+    private:
+        uint8_t* addRecordVectorAtOffset(int offset, std::vector<uint8_t*>& recordsVector);
+        uint8_t* addRecordAtOffset(int offset, uint8_t* record);
+
+    protected:
+        NetFlowLayer(uint8_t* data, size_t dataLen, Layer* prevLayer, Packet* packet, ProtocolType NetFlowProtocol)
+        : Layer(data, dataLen, prevLayer, packet) { setProtocol(NetFlowProtocol); }
+
+        explicit NetFlowLayer(ProtocolType NetFlowProtocol);
+
+    public:
+        ~NetFlowLayer() {};
+
+        /**
+         * Get version by data
+         * @return NetFlow version
+         */
+        u_int16_t getVersionByData() const;
+
+        /**
+         * Get Maximum record count of NetFlow.
+         * @return Maximum record count of NetFlow
+         */
+        uint16_t getNetFlowMaxRecordCount() const;
+
+        /**
+         * Get size of NetFlow header.
+         * @return Size of NetFlow header
+         */
+        size_t getHeaderSize() const;
+
+        /**
+         * Get size of NetFlow record.
+         * @return Size of NetFlow record
+         */
+        size_t getRecordSize() const;
+
+        /**
+         * Get size of NetFlow, include header and records.
+         * @return Size of NetFlow
+         */
+        size_t getAllRecordSize() const;
+
+        /**
+         * Get a pointer to the raw NetFlow v1/v5/v7/v9/IPFIX header. Notice this points directly to the data, so every change will change the actual packet data
+         * @return A pointer to the @ref NetFlowHeader
+         */
+        NetFlowHeader* getNetFlowHeader() const { return (NetFlowHeader*)getData(); }
+
+        /**
+         * Set a pointer to the raw NetFlow v1/v5/v7/v9/IPFIX header. Notice this points directly to the data, so every change will change the actual packet data
+         * @param[in] NetFlow header, maybe NetFlow v1/v5/v7/v9 header
+         * @return A pointer to the @ref netflow_header
+         */
+        void setNetFlowHeader(uint8_t* header);
+
+        /**
+         * Get a pointer to the raw NetFlow v1/v5/v7/v9/IPFIX header. Notice this points directly to the data, so every change will change the actual packet data
+         * @return A pointer to the @ref NetFlowHeader
+         */
+        uint8_t* getNetFlowRecord() const { return getData() + getHeaderSizeByVersion(getVersionByData()); }
+
+        /**
+         * Set a pointer to the raw NetFlow v1/v5/v7/v9 header. Notice this points directly to the data, so every change will change the actual packet data
+         * @param[in] NetFlow record, maybe NetFlow v1/v5/v7 record
+         * @return A pointer to the @ref netflow_header
+         */
+        void setNetFlowRecord(uint8_t * record, uint16_t count);
+
         /**
 	    * @return The number of records or length in this message (as extracted from the netflow_header#countOrLen field)
 	    */
@@ -428,13 +520,32 @@ namespace pcpp
         uint8_t* getNextRecord(uint8_t* record) const;
 
         /**
+         * Add record vector at a the end of the record list. The netflow_header#countorLen field will be
+         * incremented accordingly
+         * @return The method constructs a new record, adds it to the end of the record list of NetFlow message and
+         * returns a pointer to the new message. If something went wrong in creating or adding the ne record a NULL value is returned
+         * and an appropriate error message is printed to log
+         */
+        uint8_t* addRecordVectorAtLast(std::vector<uint8_t*>& recordsVector);
+
+        /**
          * Add a new record at a the end of the record list. The netflow_header#countorLen field will be
          * incremented accordingly
          * @return The method constructs a new record, adds it to the end of the record list of NetFlow message and
          * returns a pointer to the new message. If something went wrong in creating or adding the ne record a NULL value is returned
          * and an appropriate error message is printed to log
          */
-        uint8_t* addRecord();
+        uint8_t* addRecordAtLast(uint8_t* record);
+
+        /**
+         * Add record vector at a certain index of th record list. The netflow_header#countorLen field will be
+         * incremented accordingly
+         * @param[in] index The index to add the new address at
+         * @return The method constructs a new record, adds it to the NetFlow message and returns a pointer to the new message.
+         * If something went wrong in creating or adding the new record a NULL value is returned and an appropriate error message is
+         * printed to log
+         */
+        uint8_t* addRecordVectorAtIndex(int index, std::vector<uint8_t*>& recordsVector);
 
         /**
          * Add a new record at a certain index of th record list. The netflow_header#countorLen field will be
@@ -444,7 +555,7 @@ namespace pcpp
          * If something went wrong in creating or adding the new record a NULL value is returned and an appropriate error message is
          * printed to log
          */
-        uint8_t* addRecordAtIndex(int index);
+        uint8_t* addRecordAtIndex(int index, uint8_t* record);
 
         /**
          * Remove a record at a certain index. The netflow_header#numOfRecords field will be decremented accordingly
@@ -470,7 +581,7 @@ namespace pcpp
         /**
 	    * @return The message size in bytes which include the size of the basic header + the size of the record list
 	    */
-        size_t getHeaderLen() const override { return sizeof(NetFlowHeader); }
+        size_t getHeaderLen() const { return sizeof(NetFlowHeader); }
 
         std::string toString() const;
 
@@ -502,37 +613,15 @@ namespace pcpp
         /**
          * A destructor for this layer (does nothing)
          */
-        ~NetFlowV1Layer() {}
+        ~NetFlowV1Layer() {};
 
         // implement abstract methods
-
-        /**
-         * Get a pointer to the raw NetFlow v1 header. Notice this points directly to the data, so every change will change the actual packet data
-         * @return A pointer to the @ref netflow_header
-         */
-        NetFlowV1Header* getNetFlowV1Header() const { return (NetFlowV1Header*)m_Data; }
-
-        /**
-         * Set a pointer to the raw NetFlow v1 header. Notice this points directly to the data, so every change will change the actual packet data
-         * @return A pointer to the @ref netflow_header
-         */
-        void setNetFlowV1Header(NetFlowV1Header* header) const;
-
-        /**
-         * @return NetFlow v1 record data. If the layer isn't of type NetFlow v1, NULL is returned.
-         */
-        NetFlowV1Record * getNetFlowV1Record();
-
-        /**
-        * Set NetFlow v1 record message data.
-        * @param[in] NetFlowV1Record
-        */
-        void setNetFlowV1Record(NetFlowV1Record *record);
-
         /**
 	    * @return The message size in bytes which include the size of the basic header + the size of the record list
 	    */
-        size_t getHeaderLen() const override { return m_DataLen; }
+        size_t getHeaderLen() const { return getDataLen(); }
+
+        std::string toString() const;
 
         void computeCalculateFields() {};
     };
@@ -554,36 +643,106 @@ namespace pcpp
             : NetFlowLayer(data, dataLen, prevLayer, packet, NetFlow_v5) {}
 
         /**
+        * A constructor that allocates a new NetFlow packet with 0 record
+        */
+        NetFlowV5Layer() : NetFlowLayer(NetFlow_v5) {}
+
+        /**
          * A destructor for this layer (does nothing)
          */
-        ~NetFlowV5Layer() {}
+        ~NetFlowV5Layer() {};
 
-        /**
-         * Get a pointer to the raw NetFlow v5 header. Notice this points directly to the data, so every change will change the actual packet data
-         * @return A pointer to the @ref NetFlowV5Header
-         */
-        NetFlowV5Header* getNetFlowV5Header() const { return (NetFlowV5Header *)m_Data; }
-
-        /**
-         * Set a pointer to the raw NetFlow v5 header. Notice this points directly to the data, so every change will change the actual packet data
-         */
-        void setNetFlowV5Header(NetFlowV5Header* header) const;
-
-        /**
-         * @return NetFlow v5 record data. If the layer isn't of type NetFlow v5, NULL is returned.
-         */
-        NetFlowV5Record * getNetFlowV5Record();
-
-        /**
-        * Set NetFlow v5 record message data.
-        * @param[in] record
-        */
-        void setNetFlowV5Record(NetFlowV5Record *record);
-
+        // implement abstract methods
         /**
 	    * @return The message size in bytes which include the size of the basic header + the size of the record list
 	    */
-        size_t getHeaderLen() const override { return m_DataLen; }
+        size_t getHeaderLen() const { return getDataLen(); }
+
+        std::string toString() const;
+
+        /**
+	    * Does nothing for this layer (NetFlow layer is always last)
+	    */
+        void parseNextLayer() {}
+
+        void computeCalculateFields() {};
+    };
+
+    /**
+     * @class NetFlowV7Layer
+     * Represents NetFlow v7 layer. This class represents all the different messages of NetFlow v7
+     */
+    class NetFlowV7Layer : public NetFlowLayer
+    {
+    public:
+        /** A constructor that creates the layer from an existing packet raw data
+        * @param[in] data A pointer to the raw data
+        * @param[in] dataLen Size of the data in bytes
+        * @param[in] prevLayer A pointer to the previous layer
+        * @param[in] packet A pointer to the Packet instance where layer will be stored in
+        */
+        NetFlowV7Layer(uint8_t* data, size_t dataLen, Layer* prevLayer, Packet* packet)
+                : NetFlowLayer(data, dataLen, prevLayer, packet, NetFlow_v7) {}
+
+        /**
+        * A constructor that allocates a new NetFlow packet with 0 record
+        */
+        NetFlowV7Layer() : NetFlowLayer(NetFlow_v7) {}
+
+        /**
+         * A destructor for this layer (does nothing)
+         */
+        ~NetFlowV7Layer() {};
+
+        // implement abstract methods
+        /**
+	    * @return The message size in bytes which include the size of the basic header + the size of the record list
+	    */
+        size_t getHeaderLen() const { return getDataLen(); }
+
+        std::string toString() const;
+
+        /**
+	    * Does nothing for this layer (NetFlow layer is always last)
+	    */
+        void parseNextLayer() {}
+
+        void computeCalculateFields() {};
+    };
+
+    /**
+     * @class NetFlowV9Layer
+     * Represents NetFlow v9 layer. This class represents all the different messages of NetFlow v9
+     */
+    class NetFlowV9Layer : public NetFlowLayer
+    {
+    public:
+        /** A constructor that creates the layer from an existing packet raw data
+        * @param[in] data A pointer to the raw data
+        * @param[in] dataLen Size of the data in bytes
+        * @param[in] prevLayer A pointer to the previous layer
+        * @param[in] packet A pointer to the Packet instance where layer will be stored in
+        */
+        NetFlowV9Layer(uint8_t* data, size_t dataLen, Layer* prevLayer, Packet* packet)
+                : NetFlowLayer(data, dataLen, prevLayer, packet, NetFlow_v9) {}
+
+        /**
+        * A constructor that allocates a new NetFlow packet with 0 record
+        */
+        NetFlowV9Layer() : NetFlowLayer(NetFlow_v9) {}
+
+        /**
+         * A destructor for this layer (does nothing)
+         */
+        ~NetFlowV9Layer() {};
+
+        // implement abstract methods
+        /**
+	    * @return The message size in bytes which include the size of the basic header + the size of the record list
+	    */
+        size_t getHeaderLen() const { return getDataLen(); }
+
+        std::string toString() const;
 
         /**
 	    * Does nothing for this layer (NetFlow layer is always last)

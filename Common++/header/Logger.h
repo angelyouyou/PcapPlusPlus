@@ -53,6 +53,7 @@ namespace pcpp
 		PacketLogModuleGtpLayer, ///< GtpLayer module (Packet++)
 		PacketLogModuleBgpLayer, ///< GtpLayer module (Packet++)
 		PacketLogModuleSSHLayer, ///< SSHLayer module (Packet++)
+        PacketLogModuleNetFlowLayer, ///< NetFlowLayer module (Packet++)
 		PacketLogModuleTcpReassembly, ///< TcpReassembly module (Packet++)
 		PacketLogModuleIPReassembly, ///< IPReassembly module (Packet++)
 		PacketLogModuleIPSecLayer, ///< IPSecLayers module (Packet++)
